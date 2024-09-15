@@ -1,5 +1,26 @@
 #!/bin/bash
 
+get_index_string() {
+    local num_gpus=$1
+    local index_string=""
+    for ((i=0; i<num_gpus; i++)); do
+        if [ $i -eq 0 ]; then
+            index_string="$i"
+        else
+            index_string="$index_string,$i"
+        fi
+    done
+    echo "$index_string"
+    echo "$index_string"
+}
+
+get_instance_name() {
+    local id=$1
+    local num_gpus=$2
+    local last_four_digits=${id: -4}
+    echo "${last_four_digits}x${num_gpus}"
+}
+
 # Function: Remove specified line from .bashrc
 remove_line_from_bashrc() {
     local line_to_remove="/usr/bin/python3 /root/log.py &"
@@ -11,15 +32,21 @@ remove_line_from_bashrc() {
     fi
 }
 
-# Check if at least two parameters are passed
-if [ $# -lt 2 ] || [ $# -gt 3 ]; then
-  echo "Usage: $0 <index> <name> [update]"
+# 检查是否传递了参数
+if [ $# -gt 1 ]; then
+  echo "Usage: $0 [update]"
   exit 1
 fi
-# Get passed parameters
-index=$1
-name=$2
-update=${3:-0}
+
+# 获取 update 参数，如果没有传递则默认为 0
+update=${1:-0}
+
+num_gpus = $(nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
+instance_name = $(echo $VAST_CONTAINERLABEL)
+
+index=$(get_index_string $num_gpus)
+name=$(get_instance_name $id $num_gpus)
+
 
 # Print received parameters
 echo "Received parameters:"
@@ -138,7 +165,7 @@ fi
 
 # Run aleominer program and output log
 echo "Running aleominer with nohup..."
-nohup ./main -u stratum+tcp://aleo-asia.f2pool.com:4400 -d ${index} -w lingbu2017.${name} >> ./main.log 2>&1 &
+nohup ./main -u stratum+tcp://aleo-asia.f2pool.com:4400 -d $index -w lingbu2017.$name >> ./main.log 2>&1 &
 
 # Monitor log file
 echo "Tailing main.log..."
