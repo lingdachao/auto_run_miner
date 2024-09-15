@@ -11,7 +11,6 @@ get_index_string() {
         fi
     done
     echo "$index_string"
-    echo "$index_string"
 }
 
 get_instance_name() {
@@ -99,12 +98,12 @@ def is_log_file_stale(name,index):
     except FileNotFoundError:
         print(f"{file_path} no exist")
 
-def run_every_5_minutes():
+def run_every_5_minutes(name, index):
     while True:
-        is_log_file_stale('$name','$index')  # Use externally passed index and name
+        is_log_file_stale(name,index)  # Use externally passed index and name
         time.sleep(60)
 
-run_every_5_minutes()
+run_every_5_minutes("$name", "$index")
 EOL
 else
   echo "log.py already exists."
