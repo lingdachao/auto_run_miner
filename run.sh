@@ -41,11 +41,11 @@ fi
 # 获取 update 参数，如果没有传递则默认为 0
 update=${1:-0}
 
-num_gpus = $(nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
-instance_name = $(echo $VAST_CONTAINERLABEL)
+num_gpus=$(nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
+instance_name=$(echo $VAST_CONTAINERLABEL)
 
 index=$(get_index_string $num_gpus)
-name=$(get_instance_name $id $num_gpus)
+name=$(get_instance_name $instance_name $num_gpus)
 
 
 # Print received parameters
