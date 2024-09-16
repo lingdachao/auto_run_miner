@@ -41,7 +41,16 @@ fi
 update=${1:-0}
 
 num_gpus=$(nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
-instance_name=$(echo $VAST_CONTAINERLABEL)
+# 读取 VAST_CONTAINERLABEL 变量并赋值给 instance_name
+instance_name=$(echo "$VAST_CONTAINERLABEL")
+# 检查 instance_name 是否为空，如果为空，设置为随机的四位数
+if [ -z "$instance_name" ]; then
+    # 生成一个四位的随机数作为默认值
+    instance_name=$(shuf -i 1000-9999 -n 1)
+    echo "instance_name is empty, setting default value: $instance_name"
+else
+    echo "instance_name: $instance_name"
+fi
 
 index=$(get_index_string $num_gpus)
 name=$(get_instance_name $instance_name $num_gpus)
